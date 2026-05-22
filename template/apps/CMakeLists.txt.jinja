@@ -1,0 +1,10 @@
+add_executable({{ project_slug }}_app main.cpp)
+
+target_link_libraries({{ project_slug }}_app
+    PRIVATE
+        {{ project_slug }}_math
+        {{ project_slug }}_utility
+        spdlog::spdlog
+        {{ project_slug }}_warnings
+        {{ project_slug }}_options
+)

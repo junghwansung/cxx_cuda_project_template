@@ -1,0 +1,32 @@
+# --- CMake 및 빌드 결과물 ---
+build/                  # 빌드 폴더 (가장 중요)
+bin/                    # 실행 파일이 생성되는 별도 폴더가 있다면 추가
+lib/                    # 라이브러리 파일이 생성되는 별도 폴더가 있다면 추가
+CMakeCache.txt          # CMake 설정 캐시
+CMakeFiles/             # CMake 임시 작업 폴더
+cmake_install.cmake     # 설치 스크립트
+Makefile                # 생성된 메이크파일
+*.ninja                 # Ninja 빌드 파일
+.ninja_deps
+.ninja_log
+compile_commands.json   # LSP(Language Server)용 데이터 (개인 설정인 경우가 많음)
+
+# --- For Package Manager ---
+vcpkg_installed/
+vcpkg_scripts/
+conan/
+
+# --- IDE 및 에디터 설정 ---
+.vscode/*.code-workspace  # 개인 워크스페이스 파일만 제외
+.idea/                  # JetBrains (CLion) 설정
+*.swp                   # Vim 임시 파일
+*~                      # 백업 파일
+.DS_Store               # macOS 시스템 파일
+Thumbs.db               # Windows 시스템 파일 (혹시 모르니 추가)
+
+# --- 단위 테스트 및 라이브러리 ---
+# GTest 등을 외부에서 빌드하여 포함할 경우를 대비
+_deps/                  # FetchContent가 내려받는 소스들 (보통 build 안에 생기지만 혹시 모르니)
+
+# --- Copier 관련 ---
+.copier-answers.yml

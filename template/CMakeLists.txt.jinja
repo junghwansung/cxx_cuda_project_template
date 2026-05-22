@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.23)
+
+project({{ project_slug }}
+        VERSION 0.1.0{% if description %}
+        DESCRIPTION "{{ description }}"{% endif %}
+        LANGUAGES C CXX)
+
+message(STATUS "Selected Compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "Selected Generator: ${CMAKE_GENERATOR}")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+if(PROJECT_IS_TOP_LEVEL)
+  option({{ project_slug }}_BUILD_DOCS "Enable building of documentation" ON)
+else()
+  option({{ project_slug }}_BUILD_DOCS "Enable building of documentation" OFF)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND "{{ compiler }}" STREQUAL "clang")
+    message(WARNING "주의: Clang을 선택했지만 시스템은 GCC를 사용 중입니다.")
+endif()
+
+set(CMAKE_CXX_STANDARD {{ cpp_standard }})
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(spdlog CONFIG REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
+
+# 경고 플래그와 sanitizer를 전파하는 인터페이스 라이브러리
+add_library({{ project_slug }}_warnings INTERFACE)
+add_library({{ project_slug }}_options  INTERFACE)
+
+include(CompilerWarnings)
+set_project_warnings({{ project_slug }}_warnings)
+
+include(Sanitizers)
+enable_sanitizers({{ project_slug }}_options)
+
+add_subdirectory(libs)
+add_subdirectory(apps)
+add_subdirectory(docs)
+
+{% if include_google_test %}
+enable_testing()
+add_subdirectory(tests)
+{% endif %}

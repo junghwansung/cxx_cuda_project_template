@@ -1,0 +1,18 @@
+#include <gtest/gtest.h>
+#include "math.hpp"
+#include "utility.hpp"
+
+TEST(MathTest, Add) {
+    EXPECT_EQ({{ namespace_name }}::add(1, 2), 3);
+    EXPECT_EQ({{ namespace_name }}::add(-1, 1), 0);
+}
+
+TEST(MathTest, Multiply) {
+    EXPECT_DOUBLE_EQ({{ namespace_name }}::multiply(2.0, 3.0), 6.0);
+    EXPECT_DOUBLE_EQ({{ namespace_name }}::multiply(0.0, 5.0), 0.0);
+}
+
+TEST(UtilityTest, Greet) {
+    EXPECT_EQ({{ namespace_name }}::greet("World"), "Hello, World!");
+    EXPECT_EQ({{ namespace_name }}::greet(""), "Hello, !");
+}

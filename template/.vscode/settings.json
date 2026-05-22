@@ -1,0 +1,11 @@
+{
+    "cmake.preset": "default-debug",
+    "cmake.generator": "{% if use_ninja %}Ninja{% else %}Unix Makefiles{% endif %}",
+    "cmake.configureOnOpen": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cppStandard": "c++{{ cpp_standard }}",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
+    "C_Cpp.default.compilerPath": "{% if compiler == 'gcc' %}/usr/bin/g++{% else %}/usr/bin/clang++{% endif %}",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.default.intelliSenseMode": "{% if compiler == 'gcc' %}linux-gcc-x64{% else %}linux-clang-x64{% endif %}"
+}

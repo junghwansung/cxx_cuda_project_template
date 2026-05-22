@@ -1,0 +1,91 @@
+_subdirectory: template
+_answers_file: .copier-answers.yml
+_min_copier_version: "9.0"
+_templates_suffix: ".jinja"
+_exclude:
+  - "_licenses"
+  - "{% if include_google_test %}{% else %}tests{%- endif %}"
+  - "{% if license == 'MIT OR Apache-2.0' %}LICENSE.md{%- endif %}"
+  - "{% if license != 'MIT OR Apache-2.0' %}LICENSE-MIT.md{%- endif %}"
+  - "{% if license != 'MIT OR Apache-2.0' %}LICENSE-APACHE.md{%- endif %}"
+
+project_name:
+  type: str
+  default: Modern Cpp Project
+  help: 프로젝트 이름
+
+project_slug:
+  type: str
+  default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
+  help: CMake 타겟·디렉토리 식별자 (project_name에서 자동 유도)
+
+namespace_name:
+  type: str
+  default: "{{ project_slug }}"
+  help: C++ 네임스페이스 이름
+
+author_name:
+  type: str
+  default: Your Name
+  help: 저자 / 저작권자 이름
+
+author_email:
+  type: str
+  default: ""
+  help: "작성자 이메일 (선택 사항)"
+
+description:
+  type: str
+  help: "프로젝트 설명 (한 줄 요약)"
+  default: ""
+
+copyright_year:
+  type: int
+  default: 2026
+  help: 저작권 연도
+
+license:
+  type: str
+  default: MIT
+  choices:
+    - MIT
+    - Apache-2.0
+    - MIT OR Apache-2.0
+    - BSD-3-Clause
+    - GPL-3.0-or-later
+    - LGPL-3.0-or-later
+    - Proprietary
+  help: 프로젝트 라이선스
+
+cpp_standard:
+  type: str
+  default: "20"
+  choices:
+    - "20"
+    - "23"
+    - "17"
+    - "14"
+  help: C++ 표준 버전
+
+use_ninja:
+  type: bool
+  default: true
+  help: "Ninja 빌드 시스템 사용 여부 (false이면 Unix Makefiles)"
+
+compiler:
+  type: str
+  default: gcc
+  choices:
+    - gcc
+    - clang
+  help: 사용할 C++ 컴파일러
+
+include_google_test:
+  type: bool
+  default: true
+  help: Google Test / CTest 포함 여부
+
+_tasks:
+  - command: git init
+  - command: git add .
+  - command: "git commit -m 'chore: initial commit from template'"

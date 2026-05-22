@@ -1,0 +1,146 @@
+# {{ project_name }}
+{% if description %}
+> {{ description }}
+{% endif %}
+이 프로젝트는 Modern C++{{ cpp_standard }}, vcpkg, CMake Presets 기반으로 구성되었습니다.
+
+- **Compiler**: {% if compiler == 'gcc' %}GCC{% else %}Clang{% endif %}
+- **Build System**: {% if use_ninja %}Ninja{% else %}Make{% endif %}
+- **C++ Standard**: C++{{ cpp_standard }}
+- **Package Manager**: vcpkg
+- **Namespace**: `{{ namespace_name }}`
+- **License**: {{ license }}
+
+---
+
+## 🛠️ 사전 준비
+
+빌드 전 아래 도구와 환경변수가 설정되어 있어야 합니다.
+
+- CMake 3.23 이상
+- {% if compiler == 'gcc' %}GCC (`g++`){% else %}Clang (`clang++`){% endif %}
+- {% if use_ninja %}Ninja (`ninja-build`){% else %}Make (`build-essential`){% endif %}
+- vcpkg — `VCPKG_ROOT` 환경변수 필수
+
+```bash
+# VCPKG_ROOT가 설정되어 있지 않다면 셸 설정 파일에 추가
+export VCPKG_ROOT="$HOME/vcpkg"
+```
+
+---
+
+## 🚀 빌드 워크플로
+
+### Debug 빌드
+
+```bash
+# 1. 구성 — vcpkg가 vcpkg.json을 읽어 의존 라이브러리를 자동 설치
+cmake --preset default-debug
+
+# 2. 빌드
+cmake --build --preset debug
+
+# 3. 실행
+./build/debug/apps/{{ project_slug }}_app
+```
+{% if include_google_test %}
+```bash
+# 4. 테스트
+ctest --preset debug
+```
+{% endif %}
+
+### Release 빌드
+
+```bash
+cmake --preset default-release
+cmake --build --preset release
+```
+{% if include_google_test %}
+```bash
+ctest --preset release
+```
+{% endif %}
+
+### 문서 생성 (Doxygen)
+
+```bash
+cmake --build --preset debug --target docs
+# 결과: build/debug/docs/doxygen/html/index.html
+```
+
+### 빌드 초기화
+
+```bash
+rm -rf build/
+```
+
+---
+
+## 📁 프로젝트 구조
+
+```text
+{{ project_slug }}/
+├── apps/
+│   ├── CMakeLists.txt
+│   └── main.cpp              # 진입점 — libs의 기능을 조합하여 사용
+├── libs/
+│   ├── math/                 # 예시 라이브러리 (math)
+│   │   ├── include/math.hpp
+│   │   └── src/math.cpp
+│   └── utility/              # 예시 라이브러리 (utility)
+│       ├── include/utility.hpp
+│       └── src/utility.cpp
+{% if include_google_test %}├── tests/
+│   └── test_main.cpp         # Google Test 기반 유닛 테스트
+{% endif %}├── docs/                     # Doxygen 설정
+├── CMakeLists.txt
+├── CMakePresets.json
+└── vcpkg.json
+```
+
+새 라이브러리를 추가하려면 `libs/` 아래에 폴더를 만들고 `libs/CMakeLists.txt`에 `add_subdirectory`를 추가합니다.
+
+---
+
+## 🔤 네임스페이스
+
+이 프로젝트의 모든 공개 API는 `{{ namespace_name }}` 네임스페이스 안에 작성합니다.
+
+```cpp
+#include "math.hpp"
+#include "utility.hpp"
+
+{{ namespace_name }}::add(1, 2);
+{{ namespace_name }}::greet("World");
+```
+
+---
+
+## 🖥️ VS Code 통합
+
+`.vscode/` 폴더에 빌드·디버그·IntelliSense 설정이 포함되어 있습니다.
+
+| 태스크 | 단축키 / 메뉴 |
+|---|---|
+| CMake: configure (Debug) | Terminal > Run Task |
+| CMake: build (Debug) | `Ctrl+Shift+B` |{% if include_google_test %}
+| CTest: run all (Debug) | Terminal > Run Task |{% endif %}
+| CMake: clean all | Terminal > Run Task |
+
+IntelliSense는 Debug 구성 후 생성되는 `build/debug/compile_commands.json`을 자동으로 참조합니다.
+
+
+---
+
+## 라이선스
+{% if license == "MIT OR Apache-2.0" %}
+이 프로젝트는 MIT 또는 Apache-2.0 라이선스 중 하나를 선택하여 사용할 수 있습니다.
+자세한 내용은 [LICENSE-MIT.md](LICENSE-MIT.md) 및 [LICENSE-APACHE.md](LICENSE-APACHE.md)를 참고하세요.
+{% elif license == "Proprietary" %}
+이 프로젝트는 별도 서면 계약이 없는 한 모든 권리를 보유합니다.
+자세한 내용은 [LICENSE.md](LICENSE.md)를 참고하세요.
+{% else %}
+이 프로젝트는 {{ license }} 라이선스를 따릅니다.
+자세한 내용은 [LICENSE.md](LICENSE.md)를 참고하세요.
+{% endif %}

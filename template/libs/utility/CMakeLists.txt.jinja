@@ -1,0 +1,13 @@
+add_library({{ project_slug }}_utility
+    src/utility.cpp
+)
+
+target_include_directories({{ project_slug }}_utility
+    PUBLIC include
+)
+
+target_link_libraries({{ project_slug }}_utility
+    PRIVATE
+        {{ project_slug }}_warnings
+        {{ project_slug }}_options
+)

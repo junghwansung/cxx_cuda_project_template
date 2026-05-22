@@ -1,0 +1,16 @@
+find_package(GTest CONFIG REQUIRED)
+
+add_executable({{ project_slug }}_tst test_main.cpp)
+
+target_link_libraries({{ project_slug }}_tst
+    PRIVATE
+        GTest::gtest_main
+        spdlog::spdlog
+        {{ project_slug }}_math
+        {{ project_slug }}_utility
+        {{ project_slug }}_warnings
+        {{ project_slug }}_options
+)
+
+include(GoogleTest)
+gtest_discover_tests({{ project_slug }}_tst)

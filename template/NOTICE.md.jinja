@@ -1,0 +1,8 @@
+This is the list of copyright holders of {{ project_name }}.
+{% if license == "MIT OR Apache-2.0" -%}
+For licensing information, see LICENSE-MIT.md and LICENSE-APACHE.md.
+{%- else -%}
+For licensing information, see LICENSE.md.
+{%- endif %}
+
+{{ author_name }}{% if author_email %} <{{ author_email }}>{% endif %}, {{ copyright_year }}

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      VCPKG_ROOT: /opt/vcpkg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          PACKAGES="build-essential{% if use_ninja %} ninja-build{% endif %}{% if compiler == 'clang' %} clang{% endif %}"
+          sudo apt-get install -y $PACKAGES
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: vcpkg_installed
+          key: {% raw %}vcpkg-${{ hashFiles('vcpkg.json') }}{% endraw %}
+
+      - name: Setup vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git $VCPKG_ROOT --depth=1
+          $VCPKG_ROOT/bootstrap-vcpkg.sh -disableMetrics
+
+      - name: Configure (Debug)
+        run: cmake --preset default-debug
+
+      - name: Build (Debug)
+        run: cmake --build --preset debug
+{% if include_google_test %}
+      - name: Test (Debug)
+        run: ctest --preset debug --output-on-failure
+{% endif %}
+      - name: Configure (Release)
+        run: cmake --preset default-release
+
+      - name: Build (Release)
+        run: cmake --build --preset release

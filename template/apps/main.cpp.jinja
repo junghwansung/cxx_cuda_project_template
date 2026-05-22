@@ -1,0 +1,16 @@
+#include <iostream>
+#include <spdlog/spdlog.h>
+#include "math.hpp"
+#include "utility.hpp"
+
+int main() {
+    spdlog::info("Starting {{ namespace_name }}");
+
+    const auto msg = {{ namespace_name }}::greet("World");
+    std::cout << msg << "\n";
+
+    const int result = {{ namespace_name }}::add(3, 4);
+    spdlog::info("3 + 4 = {}", result);
+
+    return 0;
+}

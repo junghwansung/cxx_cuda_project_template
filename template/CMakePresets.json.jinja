@@ -1,0 +1,97 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "vcpkg-base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                },
+                "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed"
+            }
+        },
+        {
+            "name": "default-debug",
+            "inherits": "vcpkg-base",
+            "displayName": "Debug Config",
+            "description": "Ninja와 Clang/GCC를 사용하는 디버그 설정",
+            "generator": "{% if use_ninja %}Ninja{% else %}Unix Makefiles{% endif %}",
+            "binaryDir": "${sourceDir}/build/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_COMPILER": "{% if compiler == 'gcc' %}g++{% else %}clang++{% endif %}",
+                "CMAKE_C_COMPILER": "{% if compiler == 'gcc' %}gcc{% else %}clang{% endif %}",
+                "CMAKE_CXX_STANDARD": "{{ cpp_standard }}",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES"
+            }
+        },
+        {
+            "name": "default-release",
+            "inherits": "vcpkg-base",
+            "displayName": "Release Config",
+            "generator": "{% if use_ninja %}Ninja{% else %}Unix Makefiles{% endif %}",
+            "binaryDir": "${sourceDir}/build/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_COMPILER": "{% if compiler == 'gcc' %}g++{% else %}clang++{% endif %}",
+                "CMAKE_C_COMPILER": "{% if compiler == 'gcc' %}gcc{% else %}clang{% endif %}",
+                "CMAKE_CXX_STANDARD": "{{ cpp_standard }}"
+            }
+        },
+        {
+            "name": "sanitize",
+            "inherits": "vcpkg-base",
+            "displayName": "Sanitizers (ASan + UBSan)",
+            "generator": "{% if use_ninja %}Ninja{% else %}Unix Makefiles{% endif %}",
+            "binaryDir": "${sourceDir}/build/sanitize",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_COMPILER": "{% if compiler == 'gcc' %}g++{% else %}clang++{% endif %}",
+                "CMAKE_C_COMPILER": "{% if compiler == 'gcc' %}gcc{% else %}clang{% endif %}",
+                "CMAKE_CXX_STANDARD": "{{ cpp_standard }}",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "ENABLE_ASAN": "ON",
+                "ENABLE_UBSAN": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "default-debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "default-release"
+        },
+        {
+            "name": "sanitize",
+            "configurePreset": "sanitize"
+        }
+    ]{% if include_google_test %},
+    "testPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "default-debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "release",
+            "configurePreset": "default-release",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "sanitize",
+            "configurePreset": "sanitize",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]{% endif %}
+}

@@ -1,0 +1,10 @@
+{
+    "name": "{{ project_slug | replace('_', '-') }}",
+    "version-string": "0.1.0",{% if description %}
+    "description": "{{ description }}",{% endif %}
+    "dependencies": [
+        "spdlog",
+        "eigen3"{% if include_google_test %},
+        "gtest"{% endif %}
+    ]
+}

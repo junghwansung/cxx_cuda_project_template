@@ -1,0 +1,13 @@
+{% if license == "MIT" -%}
+{% include "template/_licenses/MIT.txt.jinja" %}
+{% elif license == "Apache-2.0" -%}
+{% include "template/_licenses/Apache-2.0.txt" %}
+{% elif license == "BSD-3-Clause" -%}
+{% include "template/_licenses/BSD-3-Clause.txt.jinja" %}
+{% elif license == "GPL-3.0-or-later" -%}
+{% include "template/_licenses/GPL-3.0-or-later.txt" %}
+{% elif license == "LGPL-3.0-or-later" -%}
+{% include "template/_licenses/LGPL-3.0-or-later.txt" %}
+{% elif license == "Proprietary" -%}
+{% include "template/_licenses/Proprietary.txt.jinja" %}
+{% endif -%}
