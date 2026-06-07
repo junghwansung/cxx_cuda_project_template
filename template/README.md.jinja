@@ -2,11 +2,13 @@
 {% if description %}
 > {{ description }}
 {% endif %}
-이 프로젝트는 Modern C++{{ cpp_standard }}, vcpkg, CMake Presets 기반으로 구성되었습니다.
+이 프로젝트는 Modern C++{{ cpp_standard }} + CUDA, vcpkg, CMake Presets 기반으로 구성되었습니다.
 
 - **Compiler**: {% if compiler == 'gcc' %}GCC{% else %}Clang{% endif %}
+- **CUDA Compiler**: nvcc
 - **Build System**: {% if use_ninja %}Ninja{% else %}Make{% endif %}
 - **C++ Standard**: C++{{ cpp_standard }}
+- **CUDA Architectures**: {{ cuda_architectures }}
 - **Package Manager**: vcpkg
 - **Namespace**: `{{ namespace_name }}`
 - **License**: {{ license }}
@@ -20,11 +22,16 @@
 - CMake 3.23 이상
 - {% if compiler == 'gcc' %}GCC (`g++`){% else %}Clang (`clang++`){% endif %}
 - {% if use_ninja %}Ninja (`ninja-build`){% else %}Make (`build-essential`){% endif %}
+- CUDA Toolkit (nvcc) — `PATH`와 `LD_LIBRARY_PATH`에 포함되어 있어야 함
 - vcpkg — `VCPKG_ROOT` 환경변수 필수
 
 ```bash
 # VCPKG_ROOT가 설정되어 있지 않다면 셸 설정 파일에 추가
 export VCPKG_ROOT="$HOME/vcpkg"
+
+# CUDA Toolkit 경로 (설치 경로에 맞게 수정)
+export PATH="/usr/local/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 ```
 
 ---
@@ -88,9 +95,12 @@ rm -rf build/
 │   ├── math/                 # 예시 라이브러리 (math)
 │   │   ├── include/math.hpp
 │   │   └── src/math.cpp
-│   └── utility/              # 예시 라이브러리 (utility)
-│       ├── include/utility.hpp
-│       └── src/utility.cpp
+│   ├── utility/              # 예시 라이브러리 (utility)
+│   │   ├── include/utility.hpp
+│   │   └── src/utility.cpp
+│   └── cuda/                 # CUDA 라이브러리 (vector_kernel)
+│       ├── include/vector_kernel.cuh
+│       └── src/vector_kernel.cu
 {% if include_google_test %}├── tests/
 │   └── test_main.cpp         # Google Test 기반 유닛 테스트
 {% endif %}├── docs/                     # Doxygen 설정
@@ -110,9 +120,13 @@ rm -rf build/
 ```cpp
 #include "math.hpp"
 #include "utility.hpp"
+#include "vector_kernel.cuh"
 
 {{ namespace_name }}::add(1, 2);
 {{ namespace_name }}::greet("World");
+
+std::vector<float> result;
+{{ namespace_name }}::vector_add({1.f, 2.f}, {3.f, 4.f}, result);
 ```
 
 ---
@@ -120,6 +134,7 @@ rm -rf build/
 ## 🖥️ VS Code 통합
 
 `.vscode/` 폴더에 빌드·디버그·IntelliSense 설정이 포함되어 있습니다.
+CUDA 파일 편집을 위해 **Nsight Visual Studio Code Edition** 확장을 설치하면 `.cu`/.`cuh` 파일에서 IntelliSense를 사용할 수 있습니다.
 
 | 태스크 | 단축키 / 메뉴 |
 |---|---|

@@ -23,7 +23,9 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_CXX_COMPILER": "{% if compiler == 'gcc' %}g++{% else %}clang++{% endif %}",
                 "CMAKE_C_COMPILER": "{% if compiler == 'gcc' %}gcc{% else %}clang{% endif %}",
+                "CMAKE_CUDA_COMPILER": "nvcc",
                 "CMAKE_CXX_STANDARD": "{{ cpp_standard }}",
+                "CMAKE_CUDA_ARCHITECTURES": "{{ cuda_architectures }}",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES"
             }
         },
@@ -37,7 +39,9 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_CXX_COMPILER": "{% if compiler == 'gcc' %}g++{% else %}clang++{% endif %}",
                 "CMAKE_C_COMPILER": "{% if compiler == 'gcc' %}gcc{% else %}clang{% endif %}",
-                "CMAKE_CXX_STANDARD": "{{ cpp_standard }}"
+                "CMAKE_CUDA_COMPILER": "nvcc",
+                "CMAKE_CXX_STANDARD": "{{ cpp_standard }}",
+                "CMAKE_CUDA_ARCHITECTURES": "{{ cuda_architectures }}"
             }
         },
         {
@@ -50,7 +54,9 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_CXX_COMPILER": "{% if compiler == 'gcc' %}g++{% else %}clang++{% endif %}",
                 "CMAKE_C_COMPILER": "{% if compiler == 'gcc' %}gcc{% else %}clang{% endif %}",
+                "CMAKE_CUDA_COMPILER": "nvcc",
                 "CMAKE_CXX_STANDARD": "{{ cpp_standard }}",
+                "CMAKE_CUDA_ARCHITECTURES": "{{ cuda_architectures }}",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "ENABLE_ASAN": "ON",
                 "ENABLE_UBSAN": "ON"

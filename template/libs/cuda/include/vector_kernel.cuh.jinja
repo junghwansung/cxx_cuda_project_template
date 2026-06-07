@@ -1,0 +1,17 @@
+#pragma once
+#include <vector>
+
+namespace {{ namespace_name }} {
+
+/**
+ * @brief GPU에서 두 float 벡터를 요소별로 더합니다.
+ *
+ * @param a     입력 벡터 A (호스트 메모리)
+ * @param b     입력 벡터 B (호스트 메모리, a와 같은 크기여야 함)
+ * @param result 결과 벡터 (호스트 메모리, 자동으로 resize됨)
+ */
+void vector_add(const std::vector<float>& a,
+                const std::vector<float>& b,
+                std::vector<float>& result);
+
+} // namespace {{ namespace_name }}

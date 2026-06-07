@@ -1,0 +1,16 @@
+add_library({{ project_slug }}_cuda
+    src/vector_kernel.cu
+)
+
+target_include_directories({{ project_slug }}_cuda
+    PUBLIC include
+)
+
+set_target_properties({{ project_slug }}_cuda PROPERTIES
+    CUDA_SEPARABLE_COMPILATION ON
+)
+
+target_link_libraries({{ project_slug }}_cuda
+    PUBLIC
+        CUDA::cudart
+)

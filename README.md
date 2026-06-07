@@ -1,6 +1,6 @@
-# C++ CMake 프로젝트 템플릿
+# C++ CUDA CMake 프로젝트 템플릿
 
-이 저장소는 `copier`를 사용하여 빠르고 표준화된 모던 C++ 프로젝트 틀을 생성하기 위한 템플릿입니다.
+이 저장소는 `copier`를 사용하여 빠르고 표준화된 모던 C++ + CUDA 프로젝트 틀을 생성하기 위한 템플릿입니다.
 
 ## 🚀 시작하기 전에
 
@@ -10,7 +10,23 @@
 uv tool install copier
 ```
 
-### 2. 빌드 시스템 설치
+### 2. CUDA Toolkit 설치
+
+NVIDIA 공식 사이트에서 CUDA Toolkit을 설치하거나:
+
+```bash
+# Ubuntu 예시 (버전은 환경에 맞게 조정)
+sudo apt install nvidia-cuda-toolkit
+```
+
+설치 후 환경변수를 셸 설정 파일(`.bashrc`, `.zshrc` 등)에 추가합니다.
+
+```bash
+export PATH="/usr/local/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+```
+
+### 3. 빌드 시스템 설치
 
 ```bash
 # Ninja (권장)
@@ -19,7 +35,7 @@ sudo apt install ninja-build
 # 또는 기본 Make (별도 설치 불필요, build-essential에 포함)
 ```
 
-### 3. 컴파일러 설치
+### 4. 컴파일러 설치
 
 ```bash
 # GCC (권장)
@@ -29,13 +45,13 @@ sudo apt install build-essential
 sudo apt install clang
 ```
 
-### 4. Doxygen 설치 (문서 자동화, 선택 사항)
+### 5. Doxygen 설치 (문서 자동화, 선택 사항)
 
 ```bash
 sudo apt install doxygen graphviz
 ```
 
-### 5. vcpkg 설치 (C++ 패키지 매니저)
+### 6. vcpkg 설치 (C++ 패키지 매니저)
 
 ```bash
 git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
@@ -59,9 +75,6 @@ export VCPKG_ROOT="$HOME/vcpkg"
 ```bash
 # 로컬 템플릿 사용
 copier copy --trust <이_템플릿이_있는_경로> <새_프로젝트_경로>
-
-# GitHub 템플릿 사용
-copier copy gh:ramse1163/cxx_project_template <새_프로젝트_경로>
 ```
 
 명령어를 실행하면 아래 항목들을 순서대로 묻습니다.
@@ -69,13 +82,14 @@ copier copy gh:ramse1163/cxx_project_template <새_프로젝트_경로>
 
 | 항목 | 설명 | 기본값 |
 |---|---|---|
-| `project_name` | 프로젝트 이름 | `Modern Cpp Project` |
+| `project_name` | 프로젝트 이름 | `Modern Cuda Project` |
 | `project_slug` | 파일·폴더·CMake 타겟에 사용되는 식별자 | project_name을 소문자+언더스코어로 변환 |
 | `namespace_name` | C++ 네임스페이스 이름 (짧게 변경 가능) | project_slug와 동일 |
 | `author_name` | 개발자 또는 팀 이름 | `Your Name` |
 | `copyright_year` | 저작권 연도 | `2026` |
 | `license` | SPDX 기반 라이선스 선택 | `MIT` |
 | `cpp_standard` | C++ 표준 | `20` |
+| `cuda_architectures` | CUDA 아키텍처 (예: `native`, `80`, `86`, `all`) | `native` |
 | `use_ninja` | Ninja 빌드 시스템 사용 여부 | `true` |
 | `compiler` | 컴파일러 선택 (`gcc` / `clang`) | `gcc` |
 | `include_google_test` | Google Test + CTest 포함 여부 | `true` |
@@ -98,9 +112,11 @@ copier update
 **Ninja + GCC** 조합을 권장합니다.
 
 - **Ninja**: Make 대비 빌드 속도가 빠르며, 규모가 커질수록 효과가 큽니다.
-- **GCC**: 안정성이 검증된 컴파일러로, 이 템플릿의 기본 설정이 GCC 기준으로 구성되어 있습니다.
+- **GCC**: CUDA 코드는 nvcc가 컴파일하고, 호스트 C++ 코드는 GCC가 담당합니다.
+- **`cuda_architectures: native`**: 현재 GPU 아키텍처에 맞게 자동으로 최적화합니다.
 
-개발 IDE로는 **VS Code**를 권장합니다. 생성되는 `.vscode/` 폴더가 IntelliSense, CMake 빌드, 디버깅 설정을 자동으로 제공합니다.
+개발 IDE로는 **VS Code** + **Nsight Visual Studio Code Edition** 확장을 권장합니다.
+`.cu`/`.cuh` 파일의 IntelliSense, 커널 디버깅 등을 지원합니다.
 
 ---
 
@@ -108,14 +124,17 @@ copier update
 
 ```text
 <project_slug>/
-├── CMakeLists.txt        # 최상위 CMake 설정
+├── CMakeLists.txt        # 최상위 CMake 설정 (CUDA 언어 포함)
 ├── CMakePresets.json     # Debug / Release 빌드 프리셋 (+ 테스트 프리셋)
 ├── vcpkg.json            # vcpkg 의존성 목록
 ├── README.md             # 생성된 프로젝트 설명서
 ├── apps/                 # 실행 파일 소스 (main.cpp)
 ├── libs/                 # 모듈별 라이브러리 소스
 │   ├── math/
-│   └── utility/
+│   ├── utility/
+│   └── cuda/             # CUDA 커널 라이브러리
+│       ├── include/vector_kernel.cuh
+│       └── src/vector_kernel.cu
 ├── tests/                # Google Test 기반 유닛 테스트 (include_google_test: true 시 활성화)
 ├── docs/                 # Doxygen 문서 설정
 ├── .gitignore
@@ -125,5 +144,5 @@ copier update
 ### 각 폴더 역할
 
 - **`apps/`**: `main()` 함수가 있는 실행 바이너리. `libs/`의 코드를 가져다 사용하도록 가볍게 유지합니다.
-- **`libs/`**: 기능별로 모듈화된 핵심 비즈니스 로직. 외부 프로젝트에서도 링크할 수 있도록 설계합니다.
+- **`libs/`**: 기능별로 모듈화된 핵심 로직. `libs/cuda/`에 CUDA 커널과 래퍼 함수가 있습니다.
 - **`tests/`**: `libs/`의 유닛 테스트. GTest로 작성하고 CTest로 실행합니다.

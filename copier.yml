@@ -11,7 +11,7 @@ _exclude:
 
 project_name:
   type: str
-  default: Modern Cpp Project
+  default: Modern Cuda Project
   help: 프로젝트 이름
 
 project_slug:
@@ -66,6 +66,11 @@ cpp_standard:
     - "17"
     - "14"
   help: C++ 표준 버전
+
+cuda_architectures:
+  type: str
+  default: "native"
+  help: "CUDA 아키텍처 (예: native, 75, 80, 86, 89, 90 또는 all)"
 
 use_ninja:
   type: bool

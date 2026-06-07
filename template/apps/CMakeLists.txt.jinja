@@ -4,6 +4,7 @@ target_link_libraries({{ project_slug }}_app
     PRIVATE
         {{ project_slug }}_math
         {{ project_slug }}_utility
+        {{ project_slug }}_cuda
         spdlog::spdlog
         {{ project_slug }}_warnings
         {{ project_slug }}_options
