@@ -92,5 +92,3 @@ include_google_test:
 
 _tasks:
   - command: git init
-  - command: git add .
-  - command: "git commit -m 'chore: initial commit from template'"
